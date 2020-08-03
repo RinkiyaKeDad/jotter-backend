@@ -1,36 +1,22 @@
 const jwt = require('jsonwebtoken');
 
-function auth(req, res, next) {
-  let publicURLS = [{ url: '/api/auth/', method: 'POST' }];
-
-  let isPublic = false;
-
-  for (var i = 0; i < publicURLS.length; i++) {
-    const { url, method } = publicURLS[i];
-    if (req.url.includes(url) && req.method === method) {
-      isPublic = true;
-      break;
-    }
-  }
-
-  if (isPublic) {
-    next();
-    return;
-  }
-
-  const token = req.header('x-auth-token');
-  if (!token) {
-    res.status(401).json({ msg: 'Invalid token. Access Denied' });
-    return;
-  }
-
+const auth = (req, res, next) => {
   try {
-    const decoded = jwt.verify(JSON.parse(token), 'secret');
-    req.username = decoded;
+    const token = req.header('x-auth-token');
+    if (!token) {
+      return res.status(401).json({ msg: 'No token found. Access Denied' });
+    }
+    const verified = jwt.verify(token, process.env.JWT_SECRET);
+    if (!verified)
+      return res
+        .status(401)
+        .json({ msg: 'Token verification failed, authorization denied.' });
+
+    req.username = verified.username;
     next();
-  } catch (exception) {
-    res.status(400).json({ msg: 'Token is not valid.' });
+  } catch (err) {
+    res.status(400).json({ error: err.message });
   }
-}
+};
 
 module.exports = auth;

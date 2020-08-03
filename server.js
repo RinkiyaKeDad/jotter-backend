@@ -24,9 +24,7 @@ mongoose
   })
   .catch(err => console.log('Error connecting to the database.'));
 
-app.all('/api/*', auth);
-
-app.use('/api/notes', require('./routes/notes'));
-app.use('/api/auth', require('./routes/auth'));
+app.use('/api/notes', require('./routes/noteRouter'));
+app.use('/api/auth', require('./routes/userRouter'));
 
 app.listen(API_PORT, () => console.log(`Listening on Port ${API_PORT}`));
