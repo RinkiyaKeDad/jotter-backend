@@ -6,6 +6,15 @@ const auth = require('../middleware/auth');
 
 const User = require('../models/user');
 
+//get name of user when front end send reqs with header
+router.get('/', auth, async (req, res) => {
+  const user = await User.findOne({ username: req.username });
+  res.json({
+    displayName: user.username,
+    id: user._id,
+  });
+});
+
 // create a user.
 router.post('/register', async (req, res) => {
   try {
@@ -70,6 +79,23 @@ router.post('/login', async (req, res) => {
         username: user.username,
       },
     });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+router.post('/tokenIsValid', async (req, res) => {
+  try {
+    const token = req.header('x-auth-token');
+    if (!token) return res.json(false);
+
+    const verified = jwt.verify(token, process.env.JWT_SECRET);
+    if (!verified) return res.json(false);
+
+    const user = await User.findOne({ username: verified.username });
+    if (!user) return res.json(false);
+
+    return res.json(true);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
