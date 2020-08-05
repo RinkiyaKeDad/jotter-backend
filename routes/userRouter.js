@@ -10,7 +10,7 @@ const User = require('../models/user');
 router.get('/', auth, async (req, res) => {
   const user = await User.findOne({ username: req.username });
   res.json({
-    displayName: user.username,
+    username: user.username,
     id: user._id,
   });
 });

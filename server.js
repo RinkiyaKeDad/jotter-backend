@@ -10,6 +10,7 @@ const app = express();
 const API_PORT = process.env.PORT || 8080;
 
 app.use(express.json());
+app.use(cors());
 
 const dbPath = process.env.MONGODB_CONNECTION_STRING; // Add MongoDB Path HERE.
 
