@@ -23,6 +23,16 @@ router.get('/', auth, async (req, res) => {
   }
 });
 
+// get request to get notes for a particular user
+router.get('/:id', auth, async (req, res) => {
+  try {
+    const note = await Note.findById(req.params.id);
+    res.json(note);
+  } catch (err) {
+    res.json({ msg: 'Could Not find notes for that user.' });
+  }
+});
+
 // create a note for a user.
 router.post('/', auth, async (req, res) => {
   try {
