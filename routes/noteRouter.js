@@ -23,7 +23,7 @@ router.get('/', auth, async (req, res) => {
   }
 });
 
-// get request to get notes for a particular user
+// get request to get a particular for a particular user
 router.get('/:id', auth, async (req, res) => {
   try {
     const note = await Note.findById(req.params.id);
@@ -56,10 +56,10 @@ router.patch('/:id', auth, async (req, res) => {
   try {
     const { title, body, videoLink, videoTimestamp } = req.body;
     let note = await Note.findById(req.params.id);
-    note.title = title;
-    note.body = body;
-    note.videoLink = videoLink;
-    note.videoTimestamp = videoTimestamp;
+    if (title) note.title = title;
+    if (body) note.body = body;
+    if (videoLink) note.videoLink = videoLink;
+    if (videoTimestamp) note.videoTimestamp = videoTimestamp;
     saveNote(note, res);
   } catch (err) {
     console.log(err);
