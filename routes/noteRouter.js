@@ -4,6 +4,21 @@ const auth = require('../middleware/auth');
 
 const Note = require('../models/note');
 
+const validateYouTubeUrl = url => {
+  if (url != undefined || url != '') {
+    var regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=|\?v=)([^#\&\?]*).*/;
+    var match = url.match(regExp);
+    if (match && match[2].length == 11) {
+      // Do anything for being valid
+      // if need to change the url to embed url then use below line
+      return true;
+    } else {
+      // Do anything for not being valid
+      return false;
+    }
+  }
+};
+
 const saveNote = async (note, res) => {
   try {
     const savedNote = await note.save();
@@ -37,6 +52,11 @@ router.get('/:id', auth, async (req, res) => {
 router.post('/', auth, async (req, res) => {
   try {
     const { title, body, videoLink, videoTimestamp } = req.body;
+    if (!title || !videoLink)
+      return res.status(400).json({ msg: 'Not all fields have been entered.' });
+    if (!validateYouTubeUrl(videoLink))
+      return res.status(400).json({ msg: 'Please enter a valid YouTube url.' });
+
     let note = new Note({
       title,
       body,
