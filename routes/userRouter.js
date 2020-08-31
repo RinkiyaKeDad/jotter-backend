@@ -38,7 +38,7 @@ router.post('/register', async (req, res) => {
     if (existingUser)
       return res
         .status(400)
-        .json({ msg: 'An account with this username already exists.' });
+        .json({ msg: 'Username already taken. Please try a different name.' });
     const salt = await bcrypt.genSalt();
     const passwordHash = await bcrypt.hash(password, salt);
     //Could have also just done:
