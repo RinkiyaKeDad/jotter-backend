@@ -1,5 +1,3 @@
-//Y8ZL5C2HgQmkPjO0
-
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
